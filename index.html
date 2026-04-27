@@ -11,16 +11,31 @@
 </head>
 <body>
 
-    <iframe id="frame1" src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSectionc98cd2828de040cb6ad7"></iframe>
+    <iframe id="frame1" data-src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSectionc98cd2828de040cb6ad7&navContentPaneEnabled=false"></iframe>
 
-    <iframe id="frame2" src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSection16b2b92aec6d5c4ba84c"></iframe>
+    <iframe id="frame2" data-src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSection16b2b92aec6d5c4ba84c&navContentPaneEnabled=false"></iframe>
 
-    <iframe id="frame3" src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSectionbde1e6b8d5704cac2ccd"></iframe>
+    <iframe id="frame3" data-src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSectionbde1e6b8d5704cac2ccd&navContentPaneEnabled=false"></iframe>
 
     <script>
-        const tempoTrocaSlide = 30; // 30 segundos
+        const tempoTrocaSlide = 30; 
         const frames = document.querySelectorAll('iframe');
         let currentFrame = 0;
+
+        function showFrame(index) {
+            // Esconde todos
+            frames.forEach(f => {
+                f.classList.remove('active');
+                f.src = ""; // Limpa o src para forçar o reset da sessão da aba
+            });
+
+            // Ativa o frame atual
+            const activeFrame = frames[index];
+            activeFrame.classList.add('active');
+            
+            // Atribui o link novamente (forçando o Power BI a ler o pageName do zero)
+            activeFrame.src = activeFrame.getAttribute('data-src');
+        }
 
         function startCarousel() {
             showFrame(currentFrame);
@@ -31,15 +46,7 @@
             }, tempoTrocaSlide * 1000);
         }
 
-        function showFrame(index) {
-            frames.forEach(f => f.classList.remove('active'));
-            frames[index].classList.add('active');
-            
-            // Recarrega para atualizar os dados
-            const currentSrc = frames[index].src;
-            frames[index].src = currentSrc;
-        }
-
+        // Inicia o processo
         startCarousel();
     </script>
 </body>
