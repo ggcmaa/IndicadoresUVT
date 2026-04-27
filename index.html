@@ -5,56 +5,31 @@
     <title>Gestão à Vista - Power BI</title>
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #333; font-family: sans-serif; }
+        
+        /* Ocupa a tela cheia */
         iframe { width: 100%; height: 100%; border: none; display: none; }
-        #timer-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); color: white; display: flex;
-            flex-direction: column; justify-content: center; align-items: center; z-index: 100;
-        }
+        
         .active { display: block; }
     </style>
 </head>
 <body>
 
-    <div id="timer-overlay">
-        <h1>Aguardando Login Microsoft</h1>
-        <p>O carrossel iniciará em <span id="countdown">120</span> segundos.</p>
-        <p style="font-size: 0.8em; color: #aaa;">Faça o login em qualquer aba do Power BI se solicitado.</p>
-    </div>
-
-    <iframe title="Gestao a Vista UVT - GER" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSectionc98cd2828de040cb6ad7" frameborder="0" allowFullScreen="true"></iframe>
-    <iframe title="Gestao a Vista UVT - GER" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSection16b2b92aec6d5c4ba84c" frameborder="0" allowFullScreen="true"></iframe>
-    <iframe title="Gestao a Vista UVT - GER" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSectionbde1e6b8d5704cac2ccd" frameborder="0" allowFullScreen="true"></iframe>
+    <iframe title="Prog. Ferias UVT" src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSectionc98cd2828de040cb6ad7" allowFullScreen="true"></iframe>
+    
+    <iframe title="Pendências de Documentos" src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSection16b2b92aec6d5c4ba84c" allowFullScreen="true"></iframe>
+    
+    <iframe title="Pendências N4LINK" src="https://app.powerbi.com/reportEmbed?reportId=8a080e63-782a-4658-b939-c2ddefe372e4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&pageName=ReportSectionbde1e6b8d5704cac2ccd" allowFullScreen="true"></iframe>
 
     <script>
-        // Configurações
-        const tempoEsperaLogin = 120; // 2 minutos em segundos
-        const tempoTrocaSlide = 30;   // 30 segundos por aba
-        
+        const tempoTrocaSlide = 30; // 30 segundos
         const frames = document.querySelectorAll('iframe');
         let currentFrame = 0;
-        let countdownValue = tempoEsperaLogin;
 
-        // Função de contagem regressiva
-        const timerElement = document.getElementById('countdown');
-        const overlay = document.getElementById('timer-overlay');
-
-        const countdownInterval = setInterval(() => {
-            countdownValue--;
-            timerElement.innerText = countdownValue;
-
-            if (countdownValue <= 0) {
-                clearInterval(countdownInterval);
-                overlay.style.display = 'none';
-                startCarousel();
-            }
-        }, 1000);
-
-        // Função do Carrossel
         function startCarousel() {
-            // Mostra o primeiro frame imediatamente
+            // Mostra o primeiro frame imediatamente ao carregar a página
             showFrame(currentFrame);
 
+            // Inicia o intervalo de troca
             setInterval(() => {
                 currentFrame = (currentFrame + 1) % frames.length;
                 showFrame(currentFrame);
@@ -62,13 +37,17 @@
         }
 
         function showFrame(index) {
+            // Esconde todos e mostra apenas o atual
             frames.forEach(f => f.classList.remove('active'));
             frames[index].classList.add('active');
             
-            // Força o reload do iframe ao entrar para atualizar os dados
+            // Recarrega a URL para atualizar os dados do relatório
             const currentSrc = frames[index].src;
             frames[index].src = currentSrc;
         }
+
+        // Inicia assim que o script for lido
+        startCarousel();
     </script>
 </body>
 </html>
