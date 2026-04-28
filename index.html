@@ -14,12 +14,11 @@
             position: absolute; 
             top: 0; 
             left: 0; 
-            visibility: hidden; /* Usamos visibility para manter o carregamento em background */
+            visibility: hidden; 
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.8s ease-in-out; /* Transição suave entre relatórios */
         }
 
-        /* Classe que mostra o slide atual */
         .active { 
             visibility: visible; 
             opacity: 1; 
@@ -32,27 +31,25 @@
     <div id="container-reports" class="frame-container"></div>
 
     <script>
-        // Configurações
-        const tempoTrocaSlide = 30000; // 30 segundos
-        
-        const paginas = [
-            "ReportSectionc98cd2828de040cb6ad7", // Prog Ferias
-            "ReportSection16b2b92aec6d5c4ba84c", // Pendencias documentos
-            "ReportSectionbde1e6b8d5704cac2ccd"  // Pendencia n4link
+        // 1. CONFIGURAÇÃO: Coloque aqui os links que você gerou para cada BI
+        // Importante: mantenha o "&navContentPaneEnabled=false" no final de cada link para esconder as abas
+        const linksBI = [
+            "https://app.powerbi.com/reportEmbed?reportId=77a27d25-833b-417f-a8ee-682980c960a4&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20",
+            "https://app.powerbi.com/reportEmbed?reportId=fbc2d57e-550d-46e5-b992-a9313761d494&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20",
+            "https://app.powerbi.com/reportEmbed?reportId=50b870b0-2741-4ea8-bfed-d95d2cc4df90&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20"
         ];
 
-        // URL Base (Certifique-se que o reportId e ctid estão corretos)
-        const baseEmbedUrl = "https://app.powerbi.com/reportEmbed?reportId=d77b1dfb-e844-462c-a2de-38ed32bcd315&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&navContentPaneEnabled=false";
-
+        const tempoTrocaSlide = 30000; // 30 segundos
         const container = document.getElementById('container-reports');
         const framesArray = [];
 
-        // 1. Criar e injetar os iframes
-        paginas.forEach((abaId, index) => {
+        // 2. Criação automática dos iframes
+        linksBI.forEach((url, index) => {
             const ifrm = document.createElement('iframe');
-            ifrm.src = `${baseEmbedUrl}&pageName=${abaId}`;
+            ifrm.src = url;
             ifrm.allowFullScreen = true;
             
+            // Define o primeiro como ativo
             if (index === 0) ifrm.classList.add('active');
             
             container.appendChild(ifrm);
@@ -61,23 +58,22 @@
 
         let currentIndex = 0;
 
-        function proximoSlide() {
-            console.log(`Trocando de: ${paginas[currentIndex]}`);
-
-            // Remove a classe do slide atual
+        // 3. Função de rotação
+        function rodarCarrossel() {
+            // Esconde o atual
             framesArray[currentIndex].classList.remove('active');
 
-            // Calcula o próximo (volta ao zero se chegar no fim)
+            // Calcula o próximo índice
             currentIndex = (currentIndex + 1) % framesArray.length;
 
-            // Adiciona a classe no novo slide
+            // Mostra o próximo
             framesArray[currentIndex].classList.add('active');
-
-            console.log(`Para: ${paginas[currentIndex]}`);
+            
+            console.log("Exibindo relatório: " + (currentIndex + 1));
         }
 
-        // Executa a troca no intervalo definido
-        setInterval(proximoSlide, tempoTrocaSlide);
+        // Inicia o intervalo
+        setInterval(rodarCarrossel, tempoTrocaSlide);
 
     </script>
 </body>
