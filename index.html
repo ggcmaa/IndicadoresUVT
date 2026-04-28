@@ -1,46 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestão à Vista - Power BI</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #000; }
+        .frame-container { position: relative; width: 100%; height: 100%; }
+        
+        iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            visibility: hidden; /* Usamos visibility para manter o carregamento em background */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Classe que mostra o slide atual */
+        .active { 
+            visibility: visible; 
+            opacity: 1; 
+            z-index: 10; 
+        }
+    </style>
+</head>
 <body>
 
-    <div id="container-reports" style="width: 100%; height: 100%;"></div>
+    <div id="container-reports" class="frame-container"></div>
 
     <script>
+        // Configurações
         const tempoTrocaSlide = 30000; // 30 segundos
+        
         const paginas = [
             "ReportSectionc98cd2828de040cb6ad7", // Prog Ferias
             "ReportSection16b2b92aec6d5c4ba84c", // Pendencias documentos
             "ReportSectionbde1e6b8d5704cac2ccd"  // Pendencia n4link
         ];
 
-        const baseEmbedUrl = `https://app.powerbi.com/reportEmbed?reportId=d77b1dfb-e844-462c-a2de-38ed32bcd315&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&navContentPaneEnabled=false`;
+        // URL Base (Certifique-se que o reportId e ctid estão corretos)
+        const baseEmbedUrl = "https://app.powerbi.com/reportEmbed?reportId=d77b1dfb-e844-462c-a2de-38ed32bcd315&autoAuth=true&ctid=ca4b9034-c4ac-4ca2-b97e-1e57700b0d20&navContentPaneEnabled=false";
 
         const container = document.getElementById('container-reports');
-        const iframes = [];
+        const framesArray = [];
 
-        // 1. Criar um iframe para cada aba (carrega tudo no início)
-        paginas.forEach((aba, index) => {
-            const frame = document.createElement('iframe');
-            frame.src = `${baseEmbedUrl}&pageName=${aba}`;
-            frame.style.display = (index === 0) ? "block" : "none"; // Só o primeiro fica visível
-            frame.allowFullScreen = true;
-            container.appendChild(frame);
-            iframes.push(frame);
+        // 1. Criar e injetar os iframes
+        paginas.forEach((abaId, index) => {
+            const ifrm = document.createElement('iframe');
+            ifrm.src = `${baseEmbedUrl}&pageName=${abaId}`;
+            ifrm.allowFullScreen = true;
+            
+            if (index === 0) ifrm.classList.add('active');
+            
+            container.appendChild(ifrm);
+            framesArray.push(ifrm);
         });
 
         let currentIndex = 0;
 
-        function rotateReports() {
-            // Esconde o iframe atual
-            iframes[currentIndex].style.display = "none";
+        function proximoSlide() {
+            console.log(`Trocando de: ${paginas[currentIndex]}`);
 
-            // Vai para o próximo índice
-            currentIndex = (currentIndex + 1) % iframes.length;
+            // Remove a classe do slide atual
+            framesArray[currentIndex].classList.remove('active');
 
-            // Mostra o próximo iframe
-            iframes[currentIndex].style.display = "block";
-            
-            console.log("Mostrando aba: " + paginas[currentIndex]);
+            // Calcula o próximo (volta ao zero se chegar no fim)
+            currentIndex = (currentIndex + 1) % framesArray.length;
+
+            // Adiciona a classe no novo slide
+            framesArray[currentIndex].classList.add('active');
+
+            console.log(`Para: ${paginas[currentIndex]}`);
         }
 
-        // Define o intervalo de troca
-        setInterval(rotateReports, tempoTrocaSlide);
+        // Executa a troca no intervalo definido
+        setInterval(proximoSlide, tempoTrocaSlide);
+
     </script>
 </body>
+</html>
